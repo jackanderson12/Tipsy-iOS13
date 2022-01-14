@@ -16,8 +16,10 @@ class CalculatorViewController: UIViewController {
     @IBOutlet weak var twentyPctButton: UIButton!
     @IBOutlet weak var splitNumberLabel: UILabel!
     
-    var currentTipAmount: Double = 0.0
-    var billTotal: Double = 123.56
+    var currentTipAmount: Double = 0.00
+    var splitBill: Double = 0.00
+    var peopleSplitBy: Double = 1.00
+    var billTotal: Double = 0.00
     
     @IBAction func tipChanged(_ sender: UIButton) {
         
@@ -53,9 +55,18 @@ class CalculatorViewController: UIViewController {
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
-        
-        
+        billTotal = Double(billTextField.text ?? "0.0")!
+        peopleSplitBy = Double(splitNumberLabel.text ?? "1.0")!
+        splitBill = round((((billTotal * currentTipAmount) + billTotal) / peopleSplitBy) * 100) / 100.0
+        performSegue(withIdentifier: "goToResult", sender: self)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as! ResultsViewController
+        destination.splitBill = splitBill
+        destination.billTotal = billTotal
+        destination.currentTipAmount = currentTipAmount
+        destination.peopleSplitBy = peopleSplitBy
+    }
 }
 
